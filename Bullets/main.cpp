@@ -3,7 +3,7 @@
 #include "Vector2.h"
 #include <vector>
 
-//Структура для пуль
+//Г‘ГІГ°ГіГЄГІГіГ°Г  Г¤Г«Гї ГЇГіГ«Гј
 struct bull {
 	Vector2 v, pos;
 	sf::Time t;
@@ -11,54 +11,54 @@ struct bull {
 
 int main()
 {
-	//Вектор пуль
+	//Г‚ГҐГЄГІГ®Г° ГЇГіГ«Гј
 	std::vector <bull> bullets;
-	//Инициализация таймера
+	//Г€Г­ГЁГ¶ГЁГ Г«ГЁГ§Г Г¶ГЁГї ГІГ Г©Г¬ГҐГ°Г 
 	sf::Time tm, t_b;
 	sf::Clock clock;
-	//Инициализация окна
+	//Г€Г­ГЁГ¶ГЁГ Г«ГЁГ§Г Г¶ГЁГї Г®ГЄГ­Г 
 	sf::RenderWindow window(sf::VideoMode(800, 600), "My window");
 	window.setFramerateLimit(60);
-	//Текстурирование фона
+	//Г’ГҐГЄГ±ГІГіГ°ГЁГ°Г®ГўГ Г­ГЁГҐ ГґГ®Г­Г 
 	sf::Texture mapTexture;
 	if (!mapTexture.loadFromFile("molumen-world-map.png"))
 	{
 		std::cout << "Can't load texture\n";
 	}
-	//Создание фона
+	//Г‘Г®Г§Г¤Г Г­ГЁГҐ ГґГ®Г­Г 
 	mapTexture.setSmooth(true);
 	sf::Sprite background;
 	background.setTexture(mapTexture);
 	float scale = 1.0f;
 	float currScale = scale;
-	//Константа для поворота
+	//ГЉГ®Г­Г±ГІГ Г­ГІГ  Г¤Г«Гї ГЇГ®ГўГ®Г°Г®ГІГ 
 	const float Pi = 3.14159f;
-	//Объявление евента
+	//ГЋГЎГєГїГўГ«ГҐГ­ГЁГҐ ГҐГўГҐГ­ГІГ 
 	sf::Event event;
-	//Модуль героя
+	//ГЊГ®Г¤ГіГ«Гј ГЈГҐГ°Г®Гї
 	sf::Texture texture;
 	texture.loadFromFile("hero.png");
 	sf::Sprite circle(texture);
 	circle.setScale(0.5f, 0.5f);
-	//Векторы для реализации поворота героя 
+	//Г‚ГҐГЄГІГ®Г°Г» Г¤Г«Гї Г°ГҐГ Г«ГЁГ§Г Г¶ГЁГЁ ГЇГ®ГўГ®Г°Г®ГІГ  ГЈГҐГ°Г®Гї 
 	sf::Vector2f v1, v2;
 	v1 = circle.getPosition();
-	//Вектор определения скорости пули
+	//Г‚ГҐГЄГІГ®Г° Г®ГЇГ°ГҐГ¤ГҐГ«ГҐГ­ГЁГї Г±ГЄГ®Г°Г®Г±ГІГЁ ГЇГіГ«ГЁ
 	Vector2 v(1,0);
-	//Фигура пули
+	//Г”ГЁГЈГіГ°Г  ГЇГіГ«ГЁ
 	sf::CircleShape bullet(5);
 	bullet.setFillColor(sf::Color::Black);
-	//Переменная для создания пули
+	//ГЏГҐГ°ГҐГ¬ГҐГ­Г­Г Гї Г¤Г«Гї Г±Г®Г§Г¤Г Г­ГЁГї ГЇГіГ«ГЁ
 	bull b;
-	//Основной цикл
+	//ГЋГ±Г­Г®ГўГ­Г®Г© Г¶ГЁГЄГ«
 	while (window.isOpen())
 	{
-		//Таймер
+		//Г’Г Г©Г¬ГҐГ°
 		sf::Time time = clock.getElapsedTime();
-		//Зачистка
+		//Г‡Г Г·ГЁГ±ГІГЄГ 
 		window.clear(sf::Color::Red);
 		window.draw(background);
-		//Обработка закрытие экрана
+		//ГЋГЎГ°Г ГЎГ®ГІГЄГ  Г§Г ГЄГ°Г»ГІГЁГҐ ГЅГЄГ°Г Г­Г 
 		while (window.pollEvent(event))
 		{
 			switch (event.type)
@@ -68,7 +68,7 @@ int main()
 				break;
 			}
 		}
-		//Поворот героя
+		//ГЏГ®ГўГ®Г°Г®ГІ ГЈГҐГ°Г®Гї
 		if (time.asSeconds() - tm.asSeconds() > 0.05)
 		{
 			v2 = circle.getPosition();
@@ -79,10 +79,10 @@ int main()
 			v1 = v2;
 			tm = time;
 		}
-		//Прорисовка пуль
+		//ГЏГ°Г®Г°ГЁГ±Г®ГўГЄГ  ГЇГіГ«Гј
 		for (size_t i = 0; i < bullets.size(); ++i)
 			{
-				//Просчет нового положения пули
+				//ГЏГ°Г®Г±Г·ГҐГІ Г­Г®ГўГ®ГЈГ® ГЇГ®Г«Г®Г¦ГҐГ­ГЁГї ГЇГіГ«ГЁ
 				bullets[i].pos += bullets[i].v * (500 * (time.asSeconds() - bullets[i].t.asSeconds()));
 				bullets[i].t = time;
 				bullet.setPosition(bullets[i].pos.x, bullets[i].pos.y);
@@ -90,7 +90,7 @@ int main()
 					bullets.erase(bullets.begin() + i);
 				window.draw(bullet);
 			}
-		//Рождение пули
+		//ГђГ®Г¦Г¤ГҐГ­ГЁГҐ ГЇГіГ«ГЁ
 		if ((sf::Mouse::isButtonPressed(sf::Mouse::Left))&& (time.asSeconds() - t_b.asSeconds() > 0.2))
 		{
 			b.v = v.getRotated(circle.getRotation() - 90);
@@ -100,7 +100,7 @@ int main()
 			bullets.push_back(b);
 			t_b = time;
 		}
-		//Лазер
+		//Г‹Г Г§ГҐГ°
 		if (sf::Mouse::isButtonPressed(sf::Mouse::Right)) 
 		{
 			sf::Vertex lazer[] =
@@ -110,7 +110,7 @@ int main()
 			};
 			window.draw(lazer, 20, sf::Lines);
 		}
-		//Движение по клавишам
+		//Г„ГўГЁГ¦ГҐГ­ГЁГҐ ГЇГ® ГЄГ«Г ГўГЁГёГ Г¬
 		if ((sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) && (circle.getPosition().x> 0))
 			circle.move(-1.5, 0);
 		if ((sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) && (circle.getPosition().x<800))
@@ -119,7 +119,7 @@ int main()
 			circle.move(0, -1.5);
 		if ((sf::Keyboard::isKeyPressed(sf::Keyboard::Down))&&(circle.getPosition().y<600))
 			circle.move(0, 1.5);
-		//Отрисовка
+		//ГЋГІГ°ГЁГ±Г®ГўГЄГ 
 		window.draw(circle);
 		window.display();
 	}
