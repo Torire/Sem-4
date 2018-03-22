@@ -3,13 +3,13 @@
 #include <vector>
 #include "Vector2.h"
 
-//Объявление структуры
+//ГЋГЎГєГїГўГ«ГҐГ­ГЁГҐ Г±ГІГ°ГіГЄГІГіГ°Г»
 struct Particle {
 	Vector2 pos,velocity,center;
 	float m,r;
 	sf::Time t;
 };
-//Рождение частицы
+//ГђГ®Г¦Г¤ГҐГ­ГЁГҐ Г·Г Г±ГІГЁГ¶Г»
 Particle Born(float x, float y, sf::Time t) {
 	Particle p;
 	p.pos.x = x;
@@ -23,7 +23,7 @@ Particle Born(float x, float y, sf::Time t) {
 	p.t = t;
 	return p;
 }
-//Перерасчет при столкновении
+//ГЏГҐГ°ГҐГ°Г Г±Г·ГҐГІ ГЇГ°ГЁ Г±ГІГ®Г«ГЄГ­Г®ГўГҐГ­ГЁГЁ
 void Bounce(Particle& p1, Particle& p2) {
 	Vector2 dp, d, n, v;
 	d = (p2.pos + p2.center - (p1.center + p1.pos));
@@ -36,7 +36,7 @@ void Bounce(Particle& p1, Particle& p2) {
 		p1.velocity = p1.velocity + dp / p1.m;
 	}
 }
-//Столкновение об стену
+//Г‘ГІГ®Г«ГЄГ­Г®ГўГҐГ­ГЁГҐ Г®ГЎ Г±ГІГҐГ­Гі
 void Walls(Particle& p) {
 	if ((p.pos.x < 0) || (p.pos.x >(800 - p.r * 10))) p.velocity.x = -p.velocity.x;
 	if ((p.pos.y < 0) || (p.pos.y >(600 - p.r * 10))) p.velocity.y = -p.velocity.y;
@@ -44,36 +44,36 @@ void Walls(Particle& p) {
 
 int main()
 {
-	//Инициализация таймера
+	//Г€Г­ГЁГ¶ГЁГ Г«ГЁГ§Г Г¶ГЁГї ГІГ Г©Г¬ГҐГ°Г 
 sf::Clock clock;
 sf::Time tm;
-	//Инициализация окна
+	//Г€Г­ГЁГ¶ГЁГ Г«ГЁГ§Г Г¶ГЁГї Г®ГЄГ­Г 
  sf::RenderWindow window(sf::VideoMode(800, 600), "My window");
  window.setFramerateLimit(60);
-	//Вектор частиц
+	//Г‚ГҐГЄГІГ®Г° Г·Г Г±ГІГЁГ¶
  std::vector<Particle> particles;
-	//Константа для поворота
+	//ГЉГ®Г­Г±ГІГ Г­ГІГ  Г¤Г«Гї ГЇГ®ГўГ®Г°Г®ГІГ 
  const float Pi = 3.14159f;
-	//Объявление евента
+	//ГЋГЎГєГїГўГ«ГҐГ­ГЁГҐ ГҐГўГҐГ­ГІГ 
  sf::Event event;
-	//Объявление круга
+	//ГЋГЎГєГїГўГ«ГҐГ­ГЁГҐ ГЄГ°ГіГЈГ 
  sf::CircleShape circle(5);
  circle.setFillColor(sf::Color::Black);
-	//Основной цикл
+	//ГЋГ±Г­Г®ГўГ­Г®Г© Г¶ГЁГЄГ«
   while (window.isOpen())
   {
-	  //Запуск времени
+	  //Г‡Г ГЇГіГ±ГЄ ГўГ°ГҐГ¬ГҐГ­ГЁ
 	  sf::Time time = clock.getElapsedTime();
-	  //Зачистка
+	  //Г‡Г Г·ГЁГ±ГІГЄГ 
 	  window.clear(sf::Color::White);
-	  // Рождение частицы
+	  // ГђГ®Г¦Г¤ГҐГ­ГЁГҐ Г·Г Г±ГІГЁГ¶Г»
 	  if ((sf::Mouse::isButtonPressed(sf::Mouse::Left))&&((time.asSeconds() - tm.asSeconds())>0.25))
 	  {
 		 particles.push_back(
 			 Born(sf::Mouse::getPosition(window).x, sf::Mouse::getPosition(window).y, time));
 		 tm = time;
 	  };
-	  // Обработка столкновений
+	  // ГЋГЎГ°Г ГЎГ®ГІГЄГ  Г±ГІГ®Г«ГЄГ­Г®ГўГҐГ­ГЁГ©
 	 for (size_t i = 0; i < particles.size(); ++i)
 		  {
 			  for (size_t j = i + 1; j < particles.size(); ++j)
@@ -81,21 +81,21 @@ sf::Time tm;
 				  Bounce(particles[i], particles[j]);
 			  }
 		  }
-	// Отображение положения
+	// ГЋГІГ®ГЎГ°Г Г¦ГҐГ­ГЁГҐ ГЇГ®Г«Г®Г¦ГҐГ­ГЁГї
 	  for (size_t i = 0; i < particles.size(); ++i)
 	  {
-		  //Просчет нового положения
+		  //ГЏГ°Г®Г±Г·ГҐГІ Г­Г®ГўГ®ГЈГ® ГЇГ®Г«Г®Г¦ГҐГ­ГЁГї
 		  particles[i].pos += particles[i].velocity * (15 * (time.asSeconds() - particles[i].t.asSeconds()));
 		  particles[i].t = time;
-		  //Столкновение об стены
+		  //Г‘ГІГ®Г«ГЄГ­Г®ГўГҐГ­ГЁГҐ Г®ГЎ Г±ГІГҐГ­Г»
 		  Walls(particles[i]);
-		  //Рисование частицы
+		  //ГђГЁГ±Г®ГўГ Г­ГЁГҐ Г·Г Г±ГІГЁГ¶Г»
 		  circle.setPosition(particles[i].pos.x, particles[i].pos.y);
 		  circle.setScale(particles[i].r, particles[i].r);
 		  circle.setFillColor(sf::Color(255, 200 - particles[i].m * 200 / 6, 200 - particles[i].m  * 200 / 6));
 		  window.draw(circle);
 	  }
-	  //Обработка закрытие экрана
+	  //ГЋГЎГ°Г ГЎГ®ГІГЄГ  Г§Г ГЄГ°Г»ГІГЁГҐ ГЅГЄГ°Г Г­Г 
 	  while (window.pollEvent(event))
 	  {
 		  switch (event.type)
