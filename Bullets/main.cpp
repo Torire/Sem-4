@@ -40,6 +40,7 @@ int main()
 	texture.loadFromFile("hero.png");
 	sf::Sprite circle(texture);
 	circle.setScale(0.5f, 0.5f);
+	circle.setOrigin(50, 50);
 	//Âåêòîðû äëÿ ðåàëèçàöèè ïîâîðîòà ãåðîÿ 
 	sf::Vector2f v1, v2;
 	v1 = circle.getPosition();
