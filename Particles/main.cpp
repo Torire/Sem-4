@@ -7,6 +7,7 @@
 struct Particle {
 	Vector2 pos,velocity,center;
 	float m,r;
+	// fixit: зачем каждой частице хранить время? оно для всех общее
 	sf::Time t;
 };
 //Ðîæäåíèå ÷àñòèöû
@@ -23,12 +24,14 @@ Particle Born(float x, float y, sf::Time t) {
 	p.t = t;
 	return p;
 }
+
 //Ïåðåðàñ÷åò ïðè ñòîëêíîâåíèè
 void Bounce(Particle& p1, Particle& p2) {
 	Vector2 dp, d, n, v;
 	d = (p2.pos + p2.center - (p1.center + p1.pos));
 	n = d.norm();
 	v = (p2.velocity - p1.velocity);
+	/// зачем множитель 5 нужен?
 	if ((d.Len() <= ((p1.r + p2.r) * 5)) && (v * d <= 0))
 	{
 		dp = n * ((2) * (v * n) * p2.m  * p1.m / (p1.m + p2.m));
@@ -36,8 +39,12 @@ void Bounce(Particle& p1, Particle& p2) {
 		p1.velocity = p1.velocity + dp / p1.m;
 	}
 }
+
+// fixit: все ф-и и методы классов должны содержать глагол в названии
+
 //Ñòîëêíîâåíèå îá ñòåíó
 void Walls(Particle& p) {
+	// fixit: ясно, почему залипают шарики в стене. давайте на семинаре обсудим
 	if ((p.pos.x < 0) || (p.pos.x >(800 - p.r * 10))) p.velocity.x = -p.velocity.x;
 	if ((p.pos.y < 0) || (p.pos.y >(600 - p.r * 10))) p.velocity.y = -p.velocity.y;
 }
@@ -85,6 +92,7 @@ sf::Time tm;
 	  for (size_t i = 0; i < particles.size(); ++i)
 	  {
 		  //Ïðîñ÷åò íîâîãî ïîëîæåíèÿ
+		  // fixit: зачем здесь константа 15? dr = v * dt ... никакого 15 в этом уравнении нет ведь :)
 		  particles[i].pos += particles[i].velocity * (15 * (time.asSeconds() - particles[i].t.asSeconds()));
 		  particles[i].t = time;
 		  //Ñòîëêíîâåíèå îá ñòåíû
