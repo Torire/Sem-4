@@ -62,6 +62,7 @@ using namespace std;
 
 int main(int argc, char** argv)
 {
+/// fixit: код работает с набором картинок, а не с видео с вебкамеры. 
 	try
 	{
 		// This example takes in a shape model file and then a list of images to
