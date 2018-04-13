@@ -3,9 +3,14 @@
 #include "Vector2.h"
 #include <vector>
 
+/*
+Замечания по Vector2 посмотрите в предыдущем упражнении
+*/
+
 //Ñòðóêòóðà äëÿ ïóëü
 struct bull {
 	Vector2 v, pos;
+	// зачем каждой пуле хранить какое-то время? 
 	sf::Time t;
 };
 
@@ -14,7 +19,10 @@ int main()
 	//Âåêòîð ïóëü
 	std::vector <bull> bullets;
 	//Èíèöèàëèçàöèÿ òàéìåðà
+	
+	// fixit: неинформативные название переменных tm и t_b
 	sf::Time tm, t_b;
+	
 	sf::Clock clock;
 	//Èíèöèàëèçàöèÿ îêíà
 	sf::RenderWindow window(sf::VideoMode(800, 600), "My window");
@@ -73,7 +81,7 @@ int main()
 		if (time.asSeconds() - tm.asSeconds() > 0.05)
 		{
 			v2 = circle.getPosition();
-			if (v2 != v1)
+			if (v2 != v1) // кажется, что эта проверка не нужна ... atan2 отработает в любом случае
 			{
 				circle.setRotation(90 + atan2f((v2.y - v1.y), (v2.x - v1.x)) * 180 / Pi);
 			}
@@ -84,6 +92,9 @@ int main()
 		for (size_t i = 0; i < bullets.size(); ++i)
 			{
 				//Ïðîñ÷åò íîâîãî ïîëîæåíèÿ ïóëè
+				// не здорово использовать неименованные константы
+				// эти константы лучше задавать не в пикселях сразу, а как доля от диагонали окна, например
+				// тогда при изменении размера окна все нормально будет
 				bullets[i].pos += bullets[i].v * (500 * (time.asSeconds() - bullets[i].t.asSeconds()));
 				bullets[i].t = time;
 				bullet.setPosition(bullets[i].pos.x, bullets[i].pos.y);
@@ -113,7 +124,11 @@ int main()
 		}
 		//Äâèæåíèå ïî êëàâèøàì
 		if ((sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) && (circle.getPosition().x> 0))
+		/// у вас скорость движения персонажа зависит от fps (мощности компьютера) ...
+		/// обычно вычисляют dt между кадрами и умножают на скорость движения (константа)
 			circle.move(-1.5, 0);
+		
+		/// fixit: вместо 800 нужно написать что-то вроде window.getSize().x
 		if ((sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) && (circle.getPosition().x<800))
 			circle.move(1.5, 0);
 		if ((sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) && (circle.getPosition().y>0))
