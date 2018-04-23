@@ -3,35 +3,35 @@
 #include <vector>
 #include "Vector2.h"
 
-//Îáúÿâëåíèå ñòðóêòóðû
+//Задание окна
+sf::RenderWindow window(sf::VideoMode(800, 600), "My window");
+
 struct Particle {
 	Vector2 pos,velocity,center;
 	float m,r;
-	// fixit: зачем каждой частице хранить время? оно для всех общее
-	sf::Time t;
 };
-//Ðîæäåíèå ÷àñòèöû
-Particle Born(float x, float y, sf::Time t) {
+
+//задание новой частицы
+Particle Born(float x, float y) {
 	Particle p;
 	p.pos.x = x;
 	p.pos.y = y;
 	p.r = rand() % 4 + 2;
 	p.m = p.r + rand() % 2 - 1;
-	p.velocity.x = rand() % 20 - 10;
-	p.velocity.y = rand() % 20 - 10;
+	p.velocity.x = 15*(rand() % 20 - 10);
+	p.velocity.y = 15*(rand() % 20 - 10);
 	p.center.x = p.r * 5;
 	p.center.y = p.r * 5;
-	p.t = t;
 	return p;
 }
 
-//Ïåðåðàñ÷åò ïðè ñòîëêíîâåíèè
+//Обработка столкновений
 void Bounce(Particle& p1, Particle& p2) {
 	Vector2 dp, d, n, v;
 	d = (p2.pos + p2.center - (p1.center + p1.pos));
 	n = d.norm();
 	v = (p2.velocity - p1.velocity);
-	/// зачем множитель 5 нужен?
+	/// зачем множитель 5 нужен? - эксперементально вычисленный коэффицент(когда мы задаем радиус, мы задаем его не в пикселях, а в 5 пикселях)
 	if ((d.Len() <= ((p1.r + p2.r) * 5)) && (v * d <= 0))
 	{
 		dp = n * ((2) * (v * n) * p2.m  * p1.m / (p1.m + p2.m));
@@ -40,47 +40,44 @@ void Bounce(Particle& p1, Particle& p2) {
 	}
 }
 
-// fixit: все ф-и и методы классов должны содержать глагол в названии
+// fixit: все ф-и и методы классов должны содержать глагол в названии (done?)
 
-//Ñòîëêíîâåíèå îá ñòåíó
-void Walls(Particle& p) {
-	// fixit: ясно, почему залипают шарики в стене. давайте на семинаре обсудим
-	if ((p.pos.x < 0) || (p.pos.x >(800 - p.r * 10))) p.velocity.x = -p.velocity.x;
-	if ((p.pos.y < 0) || (p.pos.y >(600 - p.r * 10))) p.velocity.y = -p.velocity.y;
+//Обработка столкновения с границами
+void СollideWall(Particle& p) {
+	// fixit: ясно, почему залипают шарики в стене. давайте на семинаре обсудим (done?)
+	if (((p.pos.x < 0) && (p.velocity.x <0)) || ((p.pos.x >(window.getSize().x - p.r * 10))&&(p.velocity.x>0)))
+		 p.velocity.x = -p.velocity.x;
+	if (((p.pos.y < 0) && (p.velocity.y <0)) || ((p.pos.y >(window.getSize().y - p.r * 10))&&(p.velocity.y>0))) p.velocity.y = -p.velocity.y;
 }
 
 int main()
 {
-	//Èíèöèàëèçàöèÿ òàéìåðà
-sf::Clock clock;
-sf::Time tm;
-	//Èíèöèàëèçàöèÿ îêíà
- sf::RenderWindow window(sf::VideoMode(800, 600), "My window");
+ //Время
+ sf::Clock clock;
+ sf::Time tm, tp;
+
  window.setFramerateLimit(60);
-	//Âåêòîð ÷àñòèö
+
  std::vector<Particle> particles;
-	//Êîíñòàíòà äëÿ ïîâîðîòà
  const float Pi = 3.14159f;
-	//Îáúÿâëåíèå åâåíòà
  sf::Event event;
-	//Îáúÿâëåíèå êðóãà
+//Задание шейпа пули
  sf::CircleShape circle(5);
  circle.setFillColor(sf::Color::Black);
-	//Îñíîâíîé öèêë
+ //Основно цикл
   while (window.isOpen())
   {
-	  //Çàïóñê âðåìåíè
 	  sf::Time time = clock.getElapsedTime();
-	  //Çà÷èñòêà
 	  window.clear(sf::Color::White);
-	  // Ðîæäåíèå ÷àñòèöû
+
+	  // Обработка нажатия кнопки мыши
 	  if ((sf::Mouse::isButtonPressed(sf::Mouse::Left))&&((time.asSeconds() - tm.asSeconds())>0.25))
 	  {
 		 particles.push_back(
-			 Born(sf::Mouse::getPosition(window).x, sf::Mouse::getPosition(window).y, time));
+			 Born(sf::Mouse::getPosition(window).x, sf::Mouse::getPosition(window).y));
 		 tm = time;
 	  };
-	  // Îáðàáîòêà ñòîëêíîâåíèé
+	  //Проверка столкновений
 	 for (size_t i = 0; i < particles.size(); ++i)
 		  {
 			  for (size_t j = i + 1; j < particles.size(); ++j)
@@ -88,22 +85,23 @@ sf::Time tm;
 				  Bounce(particles[i], particles[j]);
 			  }
 		  }
-	// Îòîáðàæåíèå ïîëîæåíèÿ
+	// Отрисовка частницы
 	  for (size_t i = 0; i < particles.size(); ++i)
 	  {
-		  //Ïðîñ÷åò íîâîãî ïîëîæåíèÿ
-		  // fixit: зачем здесь константа 15? dr = v * dt ... никакого 15 в этом уравнении нет ведь :)
-		  particles[i].pos += particles[i].velocity * (15 * (time.asSeconds() - particles[i].t.asSeconds()));
-		  particles[i].t = time;
-		  //Ñòîëêíîâåíèå îá ñòåíû
-		  Walls(particles[i]);
-		  //Ðèñîâàíèå ÷àñòèöû
+		  //Задание положения частицы
+		  // fixit: зачем здесь константа 15? dr = v * dt ... никакого 15 в этом уравнении нет ведь :) 
+		  //- просто коэффициент, чтобы частицы не слишком медленными были, перенесла в определение частицы
+		  particles[i].pos += particles[i].velocity *  (time.asSeconds() - tp.asSeconds());
+		  //Столкнулись со стеной?
+		  СollideWall(particles[i]);
+		  //Отрисовка
 		  circle.setPosition(particles[i].pos.x, particles[i].pos.y);
 		  circle.setScale(particles[i].r, particles[i].r);
 		  circle.setFillColor(sf::Color(255, 200 - particles[i].m * 200 / 6, 200 - particles[i].m  * 200 / 6));
 		  window.draw(circle);
 	  }
-	  //Îáðàáîòêà çàêðûòèå ýêðàíà
+	  tp = time;
+	  //Обработка закрытия окна
 	  while (window.pollEvent(event))
 	  {
 		  switch (event.type)
@@ -112,8 +110,10 @@ sf::Time tm;
 			  window.close();
 			  break;
 		  }
+		
 	  }
 	window.display();
   }
   return 0;
 }
+
